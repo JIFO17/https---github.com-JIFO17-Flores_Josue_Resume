@@ -1,5 +1,5 @@
                                         Josue I Flores
-      flores.josueisai@gmail.com • 208-443-7491 • https://www.linkedin.com/in/josueflorespro
+      flores.josueisai@gmail.com • 208-443-7491 • https://www.linkedin.com/in/josueflorespro 
     
 What’s your data’s storytelling?
 
