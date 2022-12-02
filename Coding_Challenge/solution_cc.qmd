@@ -1,0 +1,100 @@
+#%%
+import pandas as pd
+import altair as alt
+import numpy as np
+
+#%%
+dat = pd.read_csv('https://github.com/byuidatascience/data4missing/raw/master/data-raw/mtcars_missing/mtcars_missing.csv')
+dat
+#%%
+####################
+##   Question 1   ##
+####################
+
+hp_mean = dat.hp.mean()
+hp_mean
+
+#%%
+dat2 = dat.copy()
+dat2.hp = dat2.hp.fillna(value = hp_mean)
+dat2
+
+#%%
+dat3 = dat2.dropna(subset=['car'])
+dat3
+
+#%%
+q1_chart = (alt.Chart(dat3)
+            .mark_circle()
+            .encode(
+                x = alt.X('hp', axis = alt.Axis(title = "Horse Power", format="+.1f")),
+                y = alt.Y('mpg', axis = alt.Axis(title = "Miles per Gallon")),
+                color=alt.value("red"))
+            .properties(title = "This is awesome.")
+)
+q1_chart
+
+#%%
+lines_data = pd.DataFrame({"x":[80, 160]})
+print(lines_data)
+
+vert_lines = alt.Chart(lines_data).mark_rule().encode(x = 'x')
+vert_lines
+
+#%%
+text_data = pd.DataFrame({"x":[70, 145], "y":[25,20], "bob":["Big","Really Big"]})
+print(text_data)
+
+text_chart = alt.Chart(text_data).mark_text().encode(x='x',y='y',text='bob')
+text_chart
+#%%
+my_chart = q1_chart + vert_lines + text_chart
+my_chart.configure_title(anchor='start')
+
+#%%
+####################
+##   Question 2   ##
+####################
+
+# With the original data
+pd.crosstab(dat.cyl, dat.carb)
+
+#%%
+print(pd.crosstab(dat.cyl, dat.carb).to_markdown())
+
+
+#%%
+# With the cleaned data from Q1
+print(pd.crosstab(dat3.cyl, dat3.carb).to_markdown())
+
+#%%
+# Another method using pivot_table (with original data)
+dat.value_counts(subset = ['cyl','carb'])
+
+#%%
+dat4 = (dat
+  .value_counts(subset = ['cyl','carb'])
+  .reset_index()
+  .rename(columns = {0:"bob"})
+  )
+dat4
+
+#%%
+dat4.pivot_table(
+    values = 'bob',
+    index = 'cyl',
+    columns = 'carb',
+    fill_value=0
+    )
+
+# %%
+# And another method (with original data)
+q2 = dat.filter(["carb","cyl"])
+q2[["ones"]] = 1
+
+q2.pivot_table(values = "ones", 
+               index = "cyl", 
+               columns = "carb",
+               fill_value = 0,
+               aggfunc='sum')
+# %%
